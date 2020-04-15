@@ -1,4 +1,4 @@
-package com.endava.bootifuljms.report;
+package com.endava.bootifuljms.weather.report;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,18 +11,18 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "report_config")
-class ReportConfig {
+public class ReportConfig {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "report_config_sequence_generator",
+            sequenceName = "report_config_sequence", allocationSize = 1)
+    @GeneratedValue(generator = "report_config_sequence_generator")
     private Long id;
 
-    @Column(name = "report_code")
-    private String reportCode;
+    @OneToOne
+    private City city;
 
     @Column(name = "trigger_type")
     @Enumerated(EnumType.STRING)
     private ReportType triggerType;
-
-    @Column(name = "report_format")
-    private String reportFormat;
 }

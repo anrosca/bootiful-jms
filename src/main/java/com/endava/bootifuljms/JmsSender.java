@@ -1,51 +1,41 @@
 package com.endava.bootifuljms;
 
+import com.endava.bootifuljms.serpinski.SerpinskiRequest;
+import com.endava.bootifuljms.util.MessageUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.w3c.dom.Text;
 
 import javax.jms.*;
-import java.util.concurrent.TimeUnit;
 
+@Slf4j
 public class JmsSender {
+
     public static void main(String[] args) {
-        ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("tcp://localhost:61616");
-        try (Connection connection = connectionFactory.createConnection();
-             Session session = connection.createSession(true, Session.AUTO_ACKNOWLEDGE)) {
+        ConnectionFactory connectionFactory =
+                new ActiveMQConnectionFactory("tcp://localhost:61616");
+        try (Connection connection = connectionFactory.createConnection()) {
             connection.start();
-            Queue queue = session.createQueue("ORDERS.Q");
-            MessageProducer producer = session.createProducer(queue);
+            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            Queue requestQueue = session.createQueue("REQUEST.Q");
+            Queue responseQueue = session.createQueue("RESPONSE.Q");
+            MessageProducer producer = session.createProducer(requestQueue);
+            String request = MessageUtil.createRequestMessageWithDepth(32);
 
-            TextMessage textMessage = session.createTextMessage();
-            textMessage.setText("<?xml version='1.0' encoding='utf-8'>" +
-                    "<order customer='honda'><id>1</id>" +
-                    "<productId>13243243</productId>" +
-                    "<amount>1</amount>" +
-                    "</order>");
-            textMessage.setStringProperty("CUSTOMER_NAME", "Honda");
-            producer.send(textMessage);
-            System.out.println("Send messsage #1");
+            TextMessage requestMessage = session.createTextMessage(request);
+            requestMessage.setJMSReplyTo(responseQueue);
+            requestMessage.setStringProperty("_type", "com.endava.bootifuljms.serpinski.SerpinskiRequest");
+            producer.send(requestMessage);
 
-            try {
-                TimeUnit.SECONDS.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-//            if (true)
-//                throw new NullPointerException();
-
-            TextMessage secondMessage = session.createTextMessage();
-            secondMessage.setText("<?xml version='1.0' encoding='utf-8'>" +
-                    "<order customer='toyota'><id>1</id>" +
-                    "<productId>dssdsds</productId>" +
-                    "<amount>2</amount>" +
-                    "</order>");
-            producer.send(secondMessage);
-            System.out.println("Send messsage #2");
-
-            session.commit();
-            System.out.println("Message was sent!!!");
+            MessageConsumer consumer = session.createConsumer(responseQueue,
+                    "JMSCorrelationID='" + requestMessage.getJMSMessageID()  +"'");
+            TextMessage responseMessage = (TextMessage) consumer.receive();
+            String triangle = responseMessage.getText();
+            System.out.println(triangle);
+//            session.commit();
+            log.info("Message was sent");
         } catch (JMSException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 }

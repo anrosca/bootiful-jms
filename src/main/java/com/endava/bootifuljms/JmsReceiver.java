@@ -1,34 +1,26 @@
 package com.endava.bootifuljms;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
 import javax.jms.*;
-import java.util.concurrent.TimeUnit;
 
+@Slf4j
 public class JmsReceiver {
     public static void main(String[] args) {
-        ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("tcp://localhost:61616");
-        try(Connection connection = connectionFactory.createConnection();
-            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE)) {
+        ConnectionFactory connectionFactory =
+                new ActiveMQConnectionFactory("tcp://localhost:61616");
+        try (Connection connection = connectionFactory.createConnection()) {
             connection.start();
-            Queue queue = session.createQueue("ORDERS.Q");
+            Session session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
+            Queue queue = session.createQueue("REQUEST.Q");
             MessageConsumer consumer = session.createConsumer(queue);
+            TextMessage message = (TextMessage) consumer.receive();
+            log.info("Received message: {}", message.getText());
 
-            TextMessage textMessage = (TextMessage) consumer.receive();
-            System.out.println("Received message: " + textMessage.getText());
-            System.out.println("Message header: " + textMessage.getStringProperty("CUSTOMER_NAME"));
-
-            TimeUnit.SECONDS.sleep(10);
-
-            if (true)
-                throw new NullPointerException();
-
-            TextMessage secondMessage = (TextMessage) consumer.receive();
-            System.out.println("Received message: " + secondMessage.getText());
-
-            session.commit();
-        } catch (JMSException | InterruptedException e) {
-            e.printStackTrace();
+            message.acknowledge();;
+        } catch (JMSException e) {
+            throw new RuntimeException(e);
         }
     }
 }

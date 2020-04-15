@@ -1,0 +1,9 @@
+{"id":"192.168.0.3.tm158712674488600002","wasCommitted":true,"participants":[{"uri":"192.168.0.3.tm1","state":"COMMITTING","expires":1587126754881,"resourceName":"ORACLE_AQ"}]}
+{"id":"192.168.0.3.tm158712674488600002","wasCommitted":true,"participants":[{"uri":"192.168.0.3.tm1","state":"TERMINATED","expires":1587126756086,"resourceName":"ORACLE_AQ"}]}
+{"id":"192.168.0.3.tm158712674488500001","wasCommitted":true,"participants":[{"uri":"192.168.0.3.tm2","state":"COMMITTING","expires":1587126754843,"resourceName":"ORACLE_AQ"}]}
+{"id":"192.168.0.3.tm158712674488500001","wasCommitted":true,"participants":[{"uri":"192.168.0.3.tm2","state":"TERMINATED","expires":1587126757095,"resourceName":"ORACLE_AQ"}]}
+{"id":"192.168.0.3.tm158712674498900003","wasCommitted":false,"participants":[{"uri":"192.168.0.3.tm3","state":"TERMINATED","expires":1587127047319,"resourceName":"ORACLE_AQ"},{"uri":"192.168.0.3.tm4","state":"TERMINATED","expires":1587127047319,"resourceName":"SAFESTORE_DB"}]}
+{"id":"192.168.0.3.tm158712674618700004","wasCommitted":true,"participants":[{"uri":"192.168.0.3.tm5","state":"COMMITTING","expires":1587126756128,"resourceName":"ORACLE_AQ"}]}
+{"id":"192.168.0.3.tm158712674618700004","wasCommitted":true,"participants":[{"uri":"192.168.0.3.tm5","state":"TERMINATED","expires":1587126758230,"resourceName":"ORACLE_AQ"}]}
+{"id":"192.168.0.3.tm158712674719500005","wasCommitted":true,"participants":[{"uri":"192.168.0.3.tm6","state":"COMMITTING","expires":1587126757138,"resourceName":"ORACLE_AQ"}]}
+{"id":"192.168.0.3.tm158712674719500005","wasCommitted":true,"participants":[{"uri":"192.168.0.3.tm6","state":"TERMINATED","expires":1587126759240,"resourceName":"ORACLE_AQ"}]}
